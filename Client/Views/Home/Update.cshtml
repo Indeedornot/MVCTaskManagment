@@ -1,0 +1,67 @@
+﻿@using System.ComponentModel
+@using System.Globalization
+@model Client.Models.Task
+
+
+<head>
+    <title>title</title>
+</head>
+<body class="bg-dark text-dark">
+<div>
+    <form asp-controller="Home" asp-action="UpdatePost" method="post">
+        <div>
+            <input type="hidden" name="id" value="@Model.Id"/>
+
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Name</span>
+            <input class="form-control" aria-describedby="basic-addon1" type="text" value="@Model.Name" name="name">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon2">Description</span>
+            <input class="form-control" aria-describedby="basic-addon2" type="text" value="@Model.Description" name="description">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">Created</span>
+            <input class="form-control" aria-describedby="basic-addon3" type="datetime-local" name="created" value="@Model.Created.ToString("s", CultureInfo.InvariantCulture)">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon4">Finished</span>
+            <input class="form-control" aria-describedby="basic-addon4" type="datetime-local" name="finished"
+                   value="@if (Model.Finished is not null) { var dt = (DateTime) Model.Finished; @dt.ToString("s", CultureInfo.InvariantCulture) }">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon5">Deadline</span>
+            <input class="form-control" aria-describedby="basic-addon6" type="datetime-local" name="deadline" value="@Model.Deadline.ToString("s", CultureInfo.InvariantCulture)">
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="isFinished" id="isFinished" checked="@Model.IsFinished">
+            <label class="form-check-label text-light" for="isFinished">Is Finished</label>
+        </div>
+
+        <div>
+            <button type="submit" value="Update" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+</body>
+
+@section Scripts
+{
+    var chk = $('input[type="checkbox"]');
+    chk.each(function(){
+    var v = $(this).attr('checked') == 'checked'?1:0;
+    $(this).after('<input type="hidden" name="'+$(this).attr('rel')+'" value="'+v+'"/>');
+    });
+
+    chk.change(function(){
+    var v = $(this).is(':checked')?1:0;
+    $(this).next('input[type="hidden"]').val(v);
+    });
+}
