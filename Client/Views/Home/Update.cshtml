@@ -2,7 +2,7 @@
 @using System.Globalization
 @model Client.Models.Task
 
-
+@*TODO Checkbox still wrong value*@
 <head>
     <title>title</title>
 </head>
@@ -10,38 +10,38 @@
 <div>
     <form asp-controller="Home" asp-action="UpdatePost" method="post">
         <div>
-            <input type="hidden" name="id" value="@Model.Id"/>
+            <input type="hidden" name="id" value="@Model.Id" asp-for="Id"/>
 
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Name</span>
-            <input class="form-control" aria-describedby="basic-addon1" type="text" value="@Model.Name" name="name">
+            <input class="form-control" aria-describedby="basic-addon1" type="text" value="@Model.Name" name="name" asp-for="Name">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon2">Description</span>
-            <input class="form-control" aria-describedby="basic-addon2" type="text" value="@Model.Description" name="description">
+            <input class="form-control" aria-describedby="basic-addon2" type="text" value="@Model.Description" name="description" asp-for="Description">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon3">Created</span>
-            <input class="form-control" aria-describedby="basic-addon3" type="datetime-local" name="created" value="@Model.Created.ToString("s", CultureInfo.InvariantCulture)">
+            <input class="form-control" aria-describedby="basic-addon3" asp-for="Created" type="datetime-local" name="created" value="@Model.Created.ToString("s", CultureInfo.InvariantCulture)">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon4">Finished</span>
-            <input class="form-control" aria-describedby="basic-addon4" type="datetime-local" name="finished"
+            <input class="form-control" aria-describedby="basic-addon4" asp-for="Finished" type="datetime-local" name="finished"
                    value="@if (Model.Finished is not null) { var dt = (DateTime) Model.Finished; @dt.ToString("s", CultureInfo.InvariantCulture) }">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon5">Deadline</span>
-            <input class="form-control" aria-describedby="basic-addon6" type="datetime-local" name="deadline" value="@Model.Deadline.ToString("s", CultureInfo.InvariantCulture)">
+            <input class="form-control" aria-describedby="basic-addon6" type="datetime-local" asp-for="Deadline" value="@Model.Deadline.ToString("s", CultureInfo.InvariantCulture)">
         </div>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="isFinished" id="isFinished" checked="@Model.IsFinished">
+            <input class="form-check-input" type="checkbox" name="isFinished" id="isFinished" checked="@Model.IsFinished" asp-for="IsFinished">
             <label class="form-check-label text-light" for="isFinished">Is Finished</label>
         </div>
 
@@ -51,17 +51,3 @@
     </form>
 </div>
 </body>
-
-@section Scripts
-{
-    var chk = $('input[type="checkbox"]');
-    chk.each(function(){
-    var v = $(this).attr('checked') == 'checked'?1:0;
-    $(this).after('<input type="hidden" name="'+$(this).attr('rel')+'" value="'+v+'"/>');
-    });
-
-    chk.change(function(){
-    var v = $(this).is(':checked')?1:0;
-    $(this).next('input[type="hidden"]').val(v);
-    });
-}

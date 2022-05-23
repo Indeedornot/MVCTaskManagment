@@ -1,0 +1,49 @@
+﻿@using System.ComponentModel
+@using System.Globalization
+@model Client.Models.Task
+
+
+<head>
+    <title>title</title>
+</head>
+<body class="bg-dark text-dark">
+<div>
+    <form asp-controller="Home" asp-action="AddPost" method="post">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Name</span>
+            <input class="form-control" aria-describedby="basic-addon1" type="text" name="name" required asp-for="Name">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon2">Description</span>
+            <input class="form-control" aria-describedby="basic-addon2" type="text" name="description" required asp-for="Description">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">Created</span>
+            <input class="form-control" aria-describedby="basic-addon3" type="datetime-local" name="created" required asp-for="Created">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon4">Finished</span>
+            <input class="form-control" aria-describedby="basic-addon4" type="datetime-local" name="finished" asp-for="Finished">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon5">Deadline</span>
+            <input class="form-control" aria-describedby="basic-addon6" type="datetime-local" name="deadline" required asp-for="Deadline">
+        </div>
+
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="isFinished" id="isFinished" asp-for="IsFinished">
+            <label class="form-check-label text-light" for="isFinished" >Is Finished</label>
+        </div>
+
+        <div>
+            <button type="submit" value="Update" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+
+</body>

@@ -20,42 +20,33 @@ public class TaskController : ControllerBase
         return _context.Tasks.ToList();
     }
     
+    [HttpGet(ApiIps.GetTasksByIndex)]
+    public async Task<List<Data.Task?>> GetTasksByIndex(int indexStart, int elementCount)
+    {
+        if(indexStart < 0 || elementCount < 0)
+        {
+            return null;
+        }
+        return _context.Tasks.Skip(indexStart).Take(elementCount).ToList();
+    }
+    
     
     [HttpGet(ApiIps.GetTaskById)]
     public async Task<Data.Task?> GetTaskById(int id)
     {
         return await _context.Tasks.FindAsync(id);
     }
-    
-    [HttpGet(ApiIps.GetTaskByDate)]
 
-    public Data.Task? GetTaskByDate(DateTime date)
+    [HttpGet(ApiIps.GetTasksByName)]
+    public List<Data.Task?> GetTasksByName(string name)
     {
-        return _context.Tasks.FirstOrDefault(x => x != null && x.Created == date);
+        return _context.Tasks.Where(x => x != null && x.Name.Contains(name)).ToList();
     }
     
-    [HttpGet(ApiIps.GetTaskByFinishDate)]
-    public Data.Task? GetTaskByFinishDate(DateTime date)
+    [HttpGet(ApiIps.GetTasksByStatus)]
+    public List<Data.Task?> GetTasksByStatus(bool status)
     {
-        return _context.Tasks.FirstOrDefault(x => x != null && x.Finished == date);
-    }
-    
-    [HttpGet(ApiIps.GetTaskByDeadlineDate)]
-    public Data.Task? GetTaskByDeadlineDate(DateTime date)
-    {
-        return _context.Tasks.FirstOrDefault(x => x != null && x.Deadline == date);
-    }
-    
-    [HttpGet(ApiIps.GetTaskByName)]
-    public Data.Task? GetTaskByName(string name)
-    {
-        return _context.Tasks.FirstOrDefault(x => x != null && x.Name == name);
-    }
-    
-    [HttpGet(ApiIps.GetTaskByStatus)]
-    public Data.Task? GetTaskByStatus(bool status)
-    {
-        return _context.Tasks.FirstOrDefault(x => x != null && x.IsFinished == status);
+        return _context.Tasks.Where(x => x != null && x.IsFinished == status).ToList();
     }
     
     #endregion
@@ -76,82 +67,7 @@ public class TaskController : ControllerBase
 
         return task;
     }
-    
-    [HttpDelete(ApiIps.DeleteTaskByDate)]
-    public async Task<Data.Task?> DeleteTaskByDate(DateTime date)
-    {
-        var task = _context.Tasks.FirstOrDefault(x=> x != null && x.Created == date);
-        if (task == null)
-        {
-            return null;
-        }
 
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
-
-        return task;
-    }
-    
-    [HttpDelete(ApiIps.DeleteTaskByFinishDate)]
-    public async Task<Data.Task?> DeleteTaskByFinishDate(DateTime date)
-    {
-        var task = _context.Tasks.FirstOrDefault(x=> x != null && x.Finished == date);
-        if (task == null)
-        {
-            return null;
-        }
-
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
-
-        return task;
-    }
-    
-    [HttpDelete(ApiIps.DeleteTaskByDeadlineDate)]
-    public async Task<Data.Task?> DeleteTaskByDeadlineDate(DateTime date)
-    {
-        var task = _context.Tasks.FirstOrDefault(x=> x!.Deadline == date);
-        if (task == null)
-        {
-            return null;
-        }
-
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
-
-        return task;
-    }
-    
-    [HttpDelete(ApiIps.DeleteTaskByName)]
-    public async Task<Data.Task?> DeleteTaskByName(string name)
-    {
-        var task = _context.Tasks.FirstOrDefault(x=> x != null && x.Name == name);
-        if (task == null)
-        {
-            return null;
-        }
-
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
-
-        return task;
-    }
-    
-    [HttpDelete(ApiIps.DeleteTaskByStatus)]
-    public async Task<Data.Task?> DeleteTaskByStatus(bool status)
-    {
-        var task = _context.Tasks.FirstOrDefault(x=> x != null && x.IsFinished == status);
-        if (task == null)
-        {
-            return null;
-        }
-
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
-
-        return task;
-    }
-    
     #endregion
     
     #region Update Task by id, created, finished, deadline, title, status
@@ -175,107 +91,6 @@ public class TaskController : ControllerBase
 
         return oldTask;
     }
-    
-    [HttpPut(ApiIps.UpdateTaskByDate)]
-    public async Task<Data.Task?> UpdateTaskByDate(DateTime date, [FromBody] Data.Task task)
-    {
-        var oldTask = _context.Tasks.FirstOrDefault(x=> x != null && x.Created == date);
-        if (oldTask == null)
-        {
-            return null;
-        }
-
-        oldTask.Created = task.Created ?? oldTask.Created;
-        oldTask.Finished = task.Finished ?? oldTask.Finished;
-        oldTask.Deadline = task.Deadline ?? oldTask.Deadline;
-        oldTask.Name = task.Name ?? oldTask.Name;
-        oldTask.IsFinished = task.IsFinished ?? oldTask.IsFinished;
-
-        await _context.SaveChangesAsync();
-
-        return oldTask;
-    }
-    
-    [HttpPut(ApiIps.UpdateTaskByFinishDate)]
-    public async Task<Data.Task?> UpdateTaskByFinishDate(DateTime date, [FromBody] Data.Task task)
-    {
-        var oldTask = _context.Tasks.FirstOrDefault(x=> x != null && x.Finished == date);
-        if (oldTask == null)
-        {
-            return null;
-        }
-
-        oldTask.Created = task.Created ?? oldTask.Created;
-        oldTask.Finished = task.Finished ?? oldTask.Finished;
-        oldTask.Deadline = task.Deadline ?? oldTask.Deadline;
-        oldTask.Name = task.Name ?? oldTask.Name;
-        oldTask.IsFinished = task.IsFinished ?? oldTask.IsFinished;
-
-        await _context.SaveChangesAsync();
-
-        return oldTask;
-    }
-    
-    [HttpPut(ApiIps.UpdateTaskByDeadlineDate)]
-    public async Task<Data.Task?> UpdateTaskByDeadlineDate(DateTime date, [FromBody] Data.Task task)
-    {
-        var oldTask = _context.Tasks.FirstOrDefault(x=> x != null && x.Deadline == date);
-        if (oldTask == null)
-        {
-            return null;
-        }
-
-        oldTask.Created = task.Created ?? oldTask.Created;
-        oldTask.Finished = task.Finished ?? oldTask.Finished;
-        oldTask.Deadline = task.Deadline ?? oldTask.Deadline;
-        oldTask.Name = task.Name ?? oldTask.Name;
-        oldTask.IsFinished = task.IsFinished ?? oldTask.IsFinished;
-
-        await _context.SaveChangesAsync();
-
-        return oldTask;
-    }
-    
-    [HttpPut(ApiIps.UpdateTaskByName)]
-    public async Task<Data.Task?> UpdateTaskByName(string name, [FromBody] Data.Task task)
-    {
-        var oldTask = _context.Tasks.FirstOrDefault(x=> x != null && x.Name == name);
-        if (oldTask == null)
-        {
-            return null;
-        }
-
-        oldTask.Created = task.Created ?? oldTask.Created;
-        oldTask.Finished = task.Finished ?? oldTask.Finished;
-        oldTask.Deadline = task.Deadline ?? oldTask.Deadline;
-        oldTask.Name = task.Name ?? oldTask.Name;
-        oldTask.IsFinished = task.IsFinished ?? oldTask.IsFinished;
-
-        await _context.SaveChangesAsync();
-
-        return oldTask;
-    }
-    
-    [HttpPut(ApiIps.UpdateTaskByStatus)]
-    public async Task<Data.Task?> UpdateTaskByStatus(bool status, [FromBody] Data.Task task)
-    {
-        var oldTask = _context.Tasks.FirstOrDefault(x=> x != null && x.IsFinished == status);
-        if (oldTask == null)
-        {
-            return null;
-        }
-
-        oldTask.Created = task.Created ?? oldTask.Created;
-        oldTask.Finished = task.Finished ?? oldTask.Finished;
-        oldTask.Deadline = task.Deadline ?? oldTask.Deadline;
-        oldTask.Name = task.Name ?? oldTask.Name;
-        oldTask.IsFinished = task.IsFinished ?? oldTask.IsFinished;
-
-        await _context.SaveChangesAsync();
-
-        return oldTask;
-    }
-    
     #endregion
     
     #region Add Task

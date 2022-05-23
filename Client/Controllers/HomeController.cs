@@ -8,6 +8,7 @@ namespace Client.Controllers;
 public class HomeController : Controller
 {
     #region Default
+
     public IActionResult Privacy()
     {
         return View();
@@ -18,10 +19,24 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
     }
+
     #endregion
-    public async Task<IActionResult> Index()
+
+    public async Task<IActionResult> Index(string? searchValue, bool delete = false, int taskId = 0)
     {
-        var tasks = await ApiCommunicator.GetAllTasks();
+        List<Task> tasks;
+        if (string.IsNullOrEmpty(searchValue))
+        {
+            tasks = await ApiCommunicator.GetAllTasks();
+        }
+        else
+        {
+            tasks = await ApiCommunicator.GetTasksByName(searchValue);
+        }
+
+        ViewBag.delete = delete;
+        ViewBag.searchValue = searchValue;
+        ViewBag.taskId = taskId;
         return View(model: tasks);
     }
 
@@ -40,5 +55,30 @@ public class HomeController : Controller
         if (task is null) return Problem();
         await ApiCommunicator.UpdateTaskById(task.Id, task);
         return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public IActionResult Add()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddPost(Task? task)
+    {
+        if (task is null) return Problem();
+        await ApiCommunicator.AddTask(task);
+        return RedirectToAction("Index");
+    }
+    
+    public async Task<IActionResult> Delete(int taskId)
+    {
+        await ApiCommunicator.DeleteTaskById(taskId);
+        return RedirectToAction("Index");
+    }
+    
+    public ActionResult DeleteOverlay(int taskId)
+    {
+        return PartialView("DeleteOverlay", taskId);        
     }
 }
